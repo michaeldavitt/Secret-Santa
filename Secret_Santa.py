@@ -11,8 +11,28 @@ class Participant():
         self.gender = gender
         self.wishlist = []
 
+    def match(self, match):
+        """Method that sets the user's match"""
+        pass
+
+    def update_wishlist(self):
+        """Method that allows the user to add items to their wishlist"""
+        pass
+
+    def buy_product(self, market, gift):
+        """Method that allows a user to buy a gift on the market"""
+        pass
+
     def __repr__(self):
-        return self.name
+        """Method that provides a string representation for each user
+        
+        Each user will be represented as their name, age, gender and wishlist
+        """
+        the_rep = "Name: " + self.name + "\nAge: " + self.age + "\nGender: " + self.gender + "\nWishlist:"
+        for item in self.wishlist:
+            the_rep += ", " + item
+
+        return the_rep
 
 class Group():
     def __init__(self, name, budget, exchange_day):
@@ -20,6 +40,10 @@ class Group():
         self.budget = budget
         self.exchange_day = exchange_day
         self.members = []
+
+    def match_members(self):
+        """Method that allows the group to match group participants to one another"""
+        pass
 
     def __repr__(self):
         return self.name
@@ -32,6 +56,9 @@ class Market():
 
     def add_gift(self, gift):
         self.products.append(gift)
+
+    def remove_gift(self, gift):
+        self.products.remove(gift)
 
     def add_participants(self, participant):
         self.participants.append(participant)
