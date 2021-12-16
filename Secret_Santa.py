@@ -62,8 +62,9 @@ class Admin(Participant):
 
     def remove_member(self, member):
         """Method that allows an admin to remove a member from the secret santa group"""
-        self.members.remove(member)
-        member.set_group(None)
+        if member in self.members:
+            self.members.remove(member)
+            member.set_group(None)
 
     def match_members(self):
         """Method that allows the admin to match group participants to one another
