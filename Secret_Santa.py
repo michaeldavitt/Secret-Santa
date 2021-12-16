@@ -53,10 +53,11 @@ class Admin(Participant):
         return new_group
         
 
-    def add_member(self, member):
-        """Method that allows an admin to add a member to the secret santa group"""
-        self.members.append(member)
-        member.set_group(self.group)
+    def add_members(self, *args):
+        """Method that allows an admin to add members to the secret santa group"""
+        for member in args:
+            self.members.append(member)
+            member.set_group(self.group)
 
     def remove_member(self, member):
         """Method that allows an admin to remove a member from the secret santa group"""
@@ -158,11 +159,26 @@ james = Admin("James", 24, "M")
 # Group admin creates a group
 g1 = james.create_group("Group 1", 15, "17/12/2021")
 
-# View information about the participants
-print(michael)
+# Group admin adds participants to the group
+james.add_members(michael, alice, joe, lily)
 
-# View information about the admins
-print(james)
+# View group members
+print(g1.members)
 
-# View information about the group
-print(g1)
+# Remove a member
+james.remove_member(joe)
+
+# View group members
+print(g1.members)
+
+# Create new participants
+kevin = Participant("Kevin", 21, "M")
+amy = Participant("Amy", 19, "F")
+jessica = Participant("Jessica", 25, "F")
+laura = Participant("Laura", 23, "F")
+
+# Add new participants to the group
+james.add_members(kevin, amy, jessica, laura)
+
+# View group members
+print(g1.members)
