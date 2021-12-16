@@ -32,9 +32,22 @@ class Participant():
         self.match.show_wishlist()
 
     def buy_product(self, market, gift):
-        """Method that allows a user to buy a gift on the market"""
-        if isinstance(gift, Gift) and gift in market.products:
-            self.gift = gift
+        """Method that allows a user to buy a gift on the market
+        
+        First verifies that the user provided a valid market
+        Then verifies that the user provided a valid gift
+        If the gift is invalid, displays a list of valid gifts
+        """
+        if isinstance(market, Market):
+            if isinstance(gift, Gift) and gift in market.products:
+                self.gift = gift
+
+            else:
+                print("Error: Invalid gift. Please select from the list of gifts below: ")
+                market.show_products()
+
+        else:
+            print("Error: Invalid Market")
 
     def __repr__(self):
         """Method that provides a string representation for each user
@@ -218,3 +231,10 @@ laura.update_wishlist(guinness)
 
 # View all available products in the market
 m1.show_products()
+
+# View your matches wishlist
+michael.show_match_wishlist()
+
+# Purchase a gift for your match
+michael.buy_product(m1, guinness)
+print(michael.gift)
