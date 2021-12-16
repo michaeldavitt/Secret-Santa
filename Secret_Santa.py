@@ -115,8 +115,16 @@ class Group():
         self.group_id = Group.current_id
         Group.current_id += 1
 
+    def save_member_info(self):
+        """Store group member information in a csv file"""
+        filename = str(self.group_id) + ".csv"
+        with open(filename, "a+") as fh:
+            fh.writelines("name,age,gender,wishlist,match")
+            for member in g1.members:
+                fh.writelines(f"\n{member.name},{member.age},{member.gender},{member.wishlist},{member.match}")
+
     def __repr__(self):
-        return "Group ID: " + str(self.group_id) + "\nGroup Name: " + self.name
+        return self.name
 
 
 class Market():
@@ -158,7 +166,7 @@ class Gift():
         
         Gifts are represented by their name, price and description
         """
-        return "Name: " + self.name + "\nPrice: €" + str(self.price)
+        return self.name
 
 
 # Testing the program
@@ -239,3 +247,6 @@ michael.show_match_wishlist()
 # Purchase a gift for your match
 michael.buy_product(m1, guinness)
 print(michael.gift)
+
+# Save member information in the group
+g1.save_member_info()

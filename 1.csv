@@ -1,0 +1,9 @@
+name,age,gender,wishlist,match
+James,24,M,[Toblerone],Laura
+Michael,23,M,[Dairy Milk],James
+Alice,22,F,[Fluffy Socks],Michael
+Lily,23,F,[Victoria Secret Bare Vanilla Fragrance],Alice
+Kevin,21,M,[Carbon Fiber Wallet],Lily
+Amy,19,F,[Yankee Candle],Kevin
+Jessica,25,F,[],Amy
+Laura,23,F,[Guinness],Jessica
