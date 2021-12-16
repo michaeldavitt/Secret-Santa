@@ -23,8 +23,13 @@ class Participant():
             self.wishlist.append(gift)
 
     def show_wishlist(self):
+        """Method that shows all items in the wishlist"""
         for gift in self.wishlist:
             print(gift)
+
+    def show_match_wishlist(self):
+        """Method that shows all items in the wishlist of a participant's match"""
+        self.match.show_wishlist()
 
     def buy_product(self, market, gift):
         """Method that allows a user to buy a gift on the market"""
@@ -71,9 +76,8 @@ class Admin(Participant):
         The exception is the first group member, who is matched with the last member to join
         Assumes that the matching is done after all participants have joined the group
         """
-        mem_list = self.members.copy()
-        for i, member in enumerate(mem_list):
-            member.set_match(mem_list[i - 1])
+        for i, member in enumerate(self.members):
+            member.set_match(self.members[i - 1])
 
     def __getattr__(self, attr):
         """Method that attempts to find an attribute of interest in the group class if it cannot be found in the admin/participant class"""
@@ -104,7 +108,6 @@ class Group():
 class Market():
     def __init__(self, name):
         self.name = name
-        self.participants = []
         self.products = []
 
     def add_gifts(self, *args):
@@ -116,10 +119,6 @@ class Market():
     def remove_gift(self, gift):
         """Remove a gift from the market"""
         self.products.remove(gift)
-
-    def add_market_participant(self, participant):
-        """Add a participant to the market"""
-        self.participants.append(participant)
 
     def show_products(self):
         """Show a list of all available products for sale in the market"""
@@ -145,7 +144,7 @@ class Gift():
         
         Gifts are represented by their name, price and description
         """
-        return "Name: " + self.name + "\nPrice: " + str(self.price)
+        return "Name: " + self.name + "\nPrice: €" + str(self.price)
 
 
 # Testing the program
@@ -216,3 +215,6 @@ lily.update_wishlist(vs_fragrance)
 kevin.update_wishlist(wallet)
 james.update_wishlist(toblerone)
 laura.update_wishlist(guinness)
+
+# View all available products in the market
+m1.show_products()
