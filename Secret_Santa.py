@@ -4,7 +4,6 @@
 # A gift will have a name, a price, a seller (market), a description
 # Some participants will be admins (is-a relationship). They are similar to normal group members, except they control who gets added and can remove people from the group
 
-
 class Participant():
     """A class representing a member of a Secret Santa group"""
     def __init__(self, name, age, gender):
@@ -15,26 +14,27 @@ class Participant():
 
     def set_match(self, match):
         """Method that sets the user's match"""
-        pass
+        self.match = match
 
     def set_group(self, group):
         """Method that sets the user's group"""
-        pass
+        self.group = group
 
-    def update_wishlist(self):
+    def update_wishlist(self, gift):
         """Method that allows the user to add items to their wishlist"""
-        pass
+        self.wishlist.append(gift)
 
     def buy_product(self, market, gift):
         """Method that allows a user to buy a gift on the market"""
-        pass
+        if gift in market.products:
+            self.gift = gift
 
     def __repr__(self):
         """Method that provides a string representation for each user
         
         Each user will be represented as their name, age, gender and wishlist
         """
-        the_rep = "Name: " + self.name + "\nAge: " + self.age + "\nGender: " + self.gender + "\nWishlist:"
+        the_rep = "Name: " + self.name + "\nAge: " + str(self.age) + "\nGender: " + self.gender + "\nWishlist:"
         for item in self.wishlist:
             the_rep += ", " + item
 
@@ -44,16 +44,38 @@ class Participant():
 class Admin(Participant):
     """A class representing an admin of the Secret Santa group"""
     def create_group(self, g_name, g_budget, g_exchange_day):
-        """Method that allows an admin to create a secret santa group"""
+        """Method that allows an admin to create a secret santa group
+        
+        Admin creates the group, assigns themselves to the group, then returns the group
+        """
+        new_group = Group(g_name, g_budget, g_exchange_day)
+        self.set_group(new_group)
+        return new_group
         
 
     def add_member(self, member):
         """Method that allows an admin to add a member to the secret santa group"""
-        pass
+        self.members.append(member)
+        member.set_group(self.group)
 
     def remove_member(self, member):
         """Method that allows an admin to remove a member from the secret santa group"""
-        pass
+        self.members.remove(member)
+        member.set_group(None)
+
+    def match_members(self):
+        """Method that allows the admin to match group participants to one another
+        
+        Deterministic, each person matches with the person immediately before them in the group members list
+        The exception is the first group member, who is matched with the last member to join
+        Assumes that the matching is done after all participants have joined the group
+        """
+        mem_list = self.members.copy()
+        for i, member in enumerate(mem_list):
+            member.set_match(mem_list[i - 1])
+
+    def __getattr__(self, attr):
+        return getattr(self.group, attr)
 
 
 class Group():
@@ -61,23 +83,20 @@ class Group():
     # Class variable that keeps track of group IDs
     current_id = 1
 
-    def __init__(self, group_id, name, budget, exchange_day):
-        self.group_id = group_id
+    def __init__(self, name, budget, exchange_day):
+        self._assign_group_id()
         self.name = name
         self.budget = budget
         self.exchange_day = exchange_day
         self.members = []
 
-    def assign_group_id(self):
+    def _assign_group_id(self):
         """Method that provides the group with the current group ID, then increments the variable storing group ID"""
-        pass
-
-    def match_members(self):
-        """Method that allows the group to match group participants to one another"""
-        pass
+        self.group_id = Group.current_id
+        Group.current_id += 1
 
     def __repr__(self):
-        return self.name
+        return "Group ID: " + str(self.group_id) + "\nGroup Name: " + self.name
 
 class Market():
     def __init__(self, name):
@@ -86,13 +105,21 @@ class Market():
         self.products = []
 
     def add_gift(self, gift):
+        """Add a product to the market"""
         self.products.append(gift)
 
     def remove_gift(self, gift):
+        """Remove a gift from the market"""
         self.products.remove(gift)
 
-    def add_participants(self, participant):
+    def add_market_participant(self, participant):
+        """Add a participant to the market"""
         self.participants.append(participant)
+
+    def show_products(self):
+        """Show a list of all available products for sale in the market"""
+        for product in self.products:
+            print(product)
 
     def __repr__(self):
         """Method that provides a string representation of the market
@@ -127,3 +154,15 @@ lily = Participant("Lily", 23, "F")
 
 # Create a group admin
 james = Admin("James", 24, "M")
+
+# Group admin creates a group
+g1 = james.create_group("Group 1", 15, "17/12/2021")
+
+# View information about the participants
+print(michael)
+
+# View information about the admins
+print(james)
+
+# View information about the group
+print(g1)
