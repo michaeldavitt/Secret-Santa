@@ -22,11 +22,12 @@ class Participant():
 
     def update_wishlist(self, gift):
         """Method that allows the user to add items to their wishlist"""
-        self.wishlist.append(gift)
+        if isinstance(gift, Gift):
+            self.wishlist.append(gift)
 
     def buy_product(self, market, gift):
         """Method that allows a user to buy a gift on the market"""
-        if gift in market.products:
+        if isinstance(gift, Gift) and gift in market.products:
             self.gift = gift
 
     def __repr__(self):
@@ -34,11 +35,7 @@ class Participant():
         
         Each user will be represented as their name, age, gender and wishlist
         """
-        the_rep = "Name: " + self.name + "\nAge: " + str(self.age) + "\nGender: " + self.gender + "\nWishlist:"
-        for item in self.wishlist:
-            the_rep += ", " + item
-
-        return the_rep
+        return self.name
 
 
 class Admin(Participant):
@@ -56,13 +53,13 @@ class Admin(Participant):
     def add_members(self, *args):
         """Method that allows an admin to add members to the secret santa group"""
         for member in args:
-            if member not in self.members:
+            if isinstance(member, Participant) and member not in self.members:
                 self.members.append(member)
                 member.set_group(self.group)
 
     def remove_member(self, member):
         """Method that allows an admin to remove a member from the secret santa group"""
-        if member in self.members:
+        if isinstance(member, Participant) and member in self.members:
             self.members.remove(member)
             member.set_group(None)
 
@@ -78,6 +75,7 @@ class Admin(Participant):
             member.set_match(mem_list[i - 1])
 
     def __getattr__(self, attr):
+        """Method that attempts to find an attribute of interest in the group class if it cannot be found in the admin/participant class"""
         return getattr(self.group, attr)
 
 
@@ -101,15 +99,18 @@ class Group():
     def __repr__(self):
         return "Group ID: " + str(self.group_id) + "\nGroup Name: " + self.name
 
+
 class Market():
     def __init__(self, name):
         self.name = name
         self.participants = []
         self.products = []
 
-    def add_gift(self, gift):
+    def add_gifts(self, *args):
         """Add a product to the market"""
-        self.products.append(gift)
+        for gift in args:
+            if isinstance(gift, Gift):
+                self.products.append(gift)
 
     def remove_gift(self, gift):
         """Remove a gift from the market"""
@@ -143,8 +144,7 @@ class Gift():
         
         Gifts are represented by their name, price and description
         """
-        the_rep = "Name: " + self.name + "\nPrice: €" + self.price + "\nDescription: " + self.description
-        return the_rep
+        return self.name
 
 
 # Testing the program
@@ -184,3 +184,25 @@ james.add_members(kevin, amy, jessica, laura)
 
 # View group members
 print(g1.members)
+
+# Now that all members are in the group, we can start matching them
+james.match_members()
+
+# View a match
+print(michael.match)
+
+# Create potential gifts
+dairy_milk = Gift("Dairy Milk", 6, "Taste the deliciously creamy milk chocolate made with a glass and a half of fresh milk in every half pound bar of chocolate. This 850g extra-large bar is a birthday gift and it is ideal for sharing with friends and family. Every product in the Dairy Milk line is made with exclusively milk chocolate Suitable for vegetarians")
+yankee_candle = Gift("Yankee Candle", 9, "A new Christmas tradition that is sure to charm: Perfectly pretty holiday cookies, deliciously decorated with sugary pink icing Authentic ingredients and premium wax deliver clean, consistent, room-filling aroma Scented candle burn time: Up to 30 hours; 8 cm height x 5.5 cm width (104 g) Housed in the classic glass jar with lid to preserve the fragrance; removable label for a custom look 100 percent natural fibre cotton wick straightened and centred for a clean, even burn")
+fluffy_socks = Gift("Fluffy Socks", 15, "ONE SIZE FIT MOST - These women fluffy slipper socks fits for most size from UK size 4-9/ EU size 37-43. PREMIUM MATERIAL-Made of 98% polyester,2\% \spandex.These ladies fluffy thick socks with fashion design are suitable for womens and teen girls to wear. FLUFFY&SOFT - These bed fluffy socks for women have super soft coral velvet inner,It's very soft and warm, comfortable and breathable, no itching issue,taking good care of womens feet. ELASTICITY - The cuff,heel and toe of the fluffy slipper socks designing with High elastic microfiber,which improve the elasticity of socks and protect womens feet and leg effectively. GIFT IDEA - These winter women fluffy slipper socks are perfect presents for ladies /Teen girls,you can choose them as Christmas gift,Birthday gifts ,Halloween gift or other holiday gifts for mom,wife or girlfriend.")
+vs_fragrance = Gift("Victoria Secret Bare Vanilla Fragrance", 14.25, "Notes: Cherry, Milk, Vanilla, Sandalwood, Amber Introduced: N/A")
+wallet = Gift("Carbon Fiber Wallet", 17, "RFID Blocking Technology:secure wallet with protection to your identity; Block thieves' scanning devices; RFID technology keeps your private information and credit card safe; ensure your privacy and safety; US GOVT.FIPS 201 approved. Slim & Ultra Light:Securely carry cash (up to 9 folded bills) and 1-12 cards comfortably, such as your driver's license, passport, credit,insurance, debit, social security and business cards.Ultra light and thick body makes it comfortable for daily life or travel. Money Clip & Elastic Webbing: Made of 304 stainless steel and carbon fiber, it can be used to hold cash and bills handy. Humanized and easy-to-use design, flexible elastic webbing on three sides greatly improved the card holding capacity, your card will not slip out easily. High Quality and Good Appearance: 100 percent real carbon fiber Business Credit Card Holder which ensures long service life, 304 stainless steel money clip, slim yet expandable build, you can enjoy a durable wallet with good touch and stylish simplicity. Perfect Gift Idea:Fashionable design card clip wallet is decent gifts for friends, husband or business partners in Valentine's Day or birthday.")
+jameson = Gift("Jameson Irish Whiskey", 18, "Blend of traditional Irish pot still and fine grain whiskeys, matured for at least four years Enjoy simply with ice, in a refreshing Jameson Ginger Ale & Lime, or in classic cocktails like the Whiskey Sour Perfect gift to offer for Christmas, dinners, birthdays, Father's & Mother's Day and other special occasions Winner of the 2018 The Irish Whiskey Masters (TIWM) Gold award")
+toblerone = Gift("Toblerone", 8.75, "Smooth Swiss milk chocolate with delectable honey and almond nougat Unique triangles of delicious milk chocolate to give as a gift or share with family and friends Suitable for vegetarians Smooth Swiss milk chocolate with delectable honey and almond nougat Unique triangles of delicious milk chocolate to give as a gift or share with family and friends Suitable for vegetarians")
+guinness = Gift("Guinness", 4.5, "The packaging of the item may differ from image as we may repackage to avoid damages Unmistakably Guinness Draught Stout Beer, from the first velvet sip to the last, lingering drop Every deep-dark satisfying mouthful in between, Brewed in Ireland Guinness Draught Stout Beer")
+
+# Create a market
+m1 = Market("Market 1")
+
+# Add gifts to the market
+m1.add_gifts(dairy_milk, yankee_candle, fluffy_socks, vs_fragrance, wallet, jameson, toblerone, guinness)
