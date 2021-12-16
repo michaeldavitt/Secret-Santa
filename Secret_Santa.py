@@ -1,9 +1,3 @@
-# A group is comprised of a number of participants. Can have multiple groups. Each group has a name, an associated budget, an exchange day
-# A participant has a name, a date of birth, a gender, another participant they're matched with, a wishlist. They can buy gifts from the Market.
-# A market has a name, a number of gifts on offer and a number of participants that interact with it
-# A gift will have a name, a price, a seller (market), a description
-# Some participants will be admins (is-a relationship). They are similar to normal group members, except they control who gets added and can remove people from the group
-
 class Participant():
     """A class representing a member of a Secret Santa group"""
     def __init__(self, name, age, gender):
@@ -21,9 +15,16 @@ class Participant():
         self.group = group
 
     def update_wishlist(self, gift):
-        """Method that allows the user to add items to their wishlist"""
-        if isinstance(gift, Gift):
+        """Method that allows the user to add items to their wishlist
+        
+        Gift added should be a member of the Gift class and should not be in the wishlist already
+        """
+        if isinstance(gift, Gift) and gift not in self.wishlist:
             self.wishlist.append(gift)
+
+    def show_wishlist(self):
+        for gift in self.wishlist:
+            print(gift)
 
     def buy_product(self, market, gift):
         """Method that allows a user to buy a gift on the market"""
@@ -144,7 +145,7 @@ class Gift():
         
         Gifts are represented by their name, price and description
         """
-        return self.name
+        return "Name: " + self.name + "\nPrice: " + str(self.price)
 
 
 # Testing the program
@@ -206,3 +207,12 @@ m1 = Market("Market 1")
 
 # Add gifts to the market
 m1.add_gifts(dairy_milk, yankee_candle, fluffy_socks, vs_fragrance, wallet, jameson, toblerone, guinness)
+
+# Create some participant wishlists
+michael.update_wishlist(dairy_milk)
+amy.update_wishlist(yankee_candle)
+alice.update_wishlist(fluffy_socks)
+lily.update_wishlist(vs_fragrance)
+kevin.update_wishlist(wallet)
+james.update_wishlist(toblerone)
+laura.update_wishlist(guinness)
