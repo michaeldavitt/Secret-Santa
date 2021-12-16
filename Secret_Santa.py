@@ -56,8 +56,9 @@ class Admin(Participant):
     def add_members(self, *args):
         """Method that allows an admin to add members to the secret santa group"""
         for member in args:
-            self.members.append(member)
-            member.set_group(self.group)
+            if member not in self.members:
+                self.members.append(member)
+                member.set_group(self.group)
 
     def remove_member(self, member):
         """Method that allows an admin to remove a member from the secret santa group"""
