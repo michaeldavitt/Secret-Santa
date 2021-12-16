@@ -66,6 +66,7 @@ class Admin(Participant):
         """
         new_group = Group(g_name, g_budget, g_exchange_day)
         self.set_group(new_group)
+        new_group.members.append(self)
         return new_group
         
 
